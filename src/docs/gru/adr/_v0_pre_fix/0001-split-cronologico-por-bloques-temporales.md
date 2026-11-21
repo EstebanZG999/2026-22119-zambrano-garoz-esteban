@@ -106,7 +106,7 @@ La usan GRU y SVM, ambos sensibles a la escala de las features. XGBoost no la ne
 
 ## Validación
 
-Sin suite de tests en el repo (ver `CLAUDE.md`), la verificación se hizo ejecutando directamente:
+Sin suite de tests en el repo, la verificación se hizo ejecutando directamente:
 
 ```python
 from src.preprocessing.clean import load_and_clean, train_test_split_by_flow, scale_features
@@ -130,7 +130,7 @@ Durante esta implementación se detectó que el CSV procesado localmente reporta
 
 450,382 (439,087 BENIGN + 5,796 Slowloris + 5,499 Slowhttptest) es la cifra correcta y vigente. La produce el commit 53158f9 ("feat: drop redundant/constant columns and anomalous negative rows in basic_cleaning"), que agregó el filtro de filas con valores negativos anómalos en `basic_cleaning()` (confirmado 100% clase BENIGN, ver el comentario en el propio filtro, `src/preprocessing/clean.py`). El commit posterior 71008bc ("chore: re-run cleaning notebook with updated basic_cleaning") volvió a ejecutar las celdas principales del pipeline de ese notebook, pero no volvió a ejecutar la Sección 7 (agregada antes de ese filtro), cuyos números (450,963 filas, 439,668 BENIGN) quedaron desactualizados. La aritmética lo confirma exactamente: 439,668 − 439,087 = 581, que son las 581 filas BENIGN que ese filtro elimina. Los conteos de ataque (5,796 Slowloris + 5,499 Slowhttptest) son idénticos en ambas versiones, porque el filtro no toca esa clase.
 
-Esta explicación queda documentada en tres lugares consistentes, como única fuente de verdad citada desde cada uno: este ADR, `CLAUDE.md` (sección "Data"), y un comentario en el propio filtro dentro de `src/preprocessing/clean.py`.
+Esta explicación queda documentada en dos lugares consistentes: este ADR y un comentario en el propio filtro dentro de `src/preprocessing/clean.py`.
 
 No se requiere ningún cambio de código adicional por esto. Como limpieza de higiene menor (fuera del alcance de esta rama), sería conveniente que alguien del equipo re-ejecute `notebooks/Cleaning/limpieza_low_and_slow.ipynb` completo ("Restart & Run All") en un commit chore: aparte, para que la Sección 7 vuelva a coincidir con el resto del notebook.
 
